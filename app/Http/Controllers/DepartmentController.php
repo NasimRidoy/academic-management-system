@@ -25,7 +25,7 @@ class DepartmentController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'nullable|string|max:10'
         ]);
-        //$department->load(['students', 'instructors', 'courses'])
+        
         $department = Department::create($data);
         return response()->json($department, 201);
     }
@@ -35,7 +35,7 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
-        // $department->load(['students', 'instructors', 'courses']);
+        
         return response()->json($department, 200);
     }
 

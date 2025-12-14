@@ -53,7 +53,7 @@ class CourseController extends Controller
             'code' => 'nullable|string|max:10',
             'department_id' => 'required|exists:departments,id',
             'instructor_id' => 'required|exists:instructors,id',
-            'credit' => 'required|numeric',
+            'credit' => 'required|numeric'
         ]);
 
         $course->update($data);

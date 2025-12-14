@@ -23,7 +23,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::middleware('admin')->group(function () {
         Route::apiResource('departments', DepartmentController::class);
-        Route::apiResource('instructors', InstructorController::class);
+        // Route::apiResource('instructors', InstructorController::class);
         Route::apiResource('courses', CourseController::class);
         Route::apiResource('enrollments', EnrollmentController::class);
 
@@ -44,6 +44,3 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::post('/logout', [AuthController::class, 'logout']);
 });
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
