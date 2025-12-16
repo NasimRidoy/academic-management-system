@@ -8,7 +8,6 @@ class Student extends Model
 {
     protected $fillable = ['name', 'email', 'phone', 'department_id', 'user_id'];
 
-    // Student belongs to a department
     public function department()
     {
         return $this->belongsTo(Department::class);
@@ -20,7 +19,6 @@ class Student extends Model
     }
 
 
-    // Student can enroll in many courses (many-to-many)
     public function courses()
     {
         return $this->belongsToMany(Course::class, 'enrollments')

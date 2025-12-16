@@ -6,17 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class Enrollment extends Model
 {
-    protected $table = 'enrollments'; // explicit table name
 
     protected $fillable = ['student_id', 'course_id', 'gpa'];
 
-    // Student relation
     public function student()
     {
         return $this->belongsTo(Student::class);
     }
 
-    // Course relation
     public function course()
     {
         return $this->belongsTo(Course::class);
