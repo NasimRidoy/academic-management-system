@@ -23,8 +23,7 @@ class EnrollmentController extends Controller
     {
         $data = $request->validate([
             'student_id' => 'required|exists:students,id',
-            'course_id'  => 'required|exists:courses,id',
-            'gpa'        => 'nullable|numeric|min:0|max:4'
+            'course_id'  => 'required|exists:courses,id'
         ]);
 
         $enrollment = Enrollment::firstOrCreate(

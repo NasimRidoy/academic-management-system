@@ -25,7 +25,7 @@ class CourseController extends Controller
             'name' => 'required|string|max:255',
             'code' => 'nullable|string|max:10',
             'department_id' => 'required|exists:departments,id',
-            'instructor_id' => 'required|exists:instructors,id',
+            'instructor_id' => 'nullable|exists:instructors,id',
             'credit' => 'required|numeric'
         ]);
         $course = Course::create($data);
