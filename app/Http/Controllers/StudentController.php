@@ -8,6 +8,8 @@ use App\Models\Instructor;
 use Illuminate\Auth\Access\Gate;
 use Illuminate\Http\Request;
 use SebastianBergmann\FileIterator\Facade;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class StudentController extends Controller
 {
@@ -16,7 +18,10 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::with(['department', 'user'])->get();
+        $students = Cache::remember('students.index', 6, function () {
+            Log::info('HIT Student Index DATABASE');
+            return Student::with(['department', 'user'])->get();
+        });
 
         return response()->json($students);
     }
@@ -50,6 +55,8 @@ class StudentController extends Controller
             'department_id' => $validated['department_id'],
             'user_id'       => $user->id
         ]);
+
+        Cache::forget('students.index');
         $student->load(['department', 'user']);
         return response()->json($student, 201);
     }
@@ -62,8 +69,13 @@ class StudentController extends Controller
         
         $this->authorize('view', $student);
 
-        $student->load(['department', 'user', 'courses']);
-        return response()->json($student, 200);
+        $cacheKey = "students.show.$student->id";
+        $data = Cache::remember($cacheKey, 6, function () use ($student) {
+            Log::info('HIT Student Show DATABASE');
+            return $student->load(['department', 'user', 'courses']);
+        });
+
+        return response()->json($data, 200);
     }
 
     public function update(Request $request, Student $student)
@@ -87,6 +99,8 @@ class StudentController extends Controller
             'department_id' => $data['department_id']
         ]);
 
+        Cache::forget('students.index');
+        Cache::forget("students.show.$student->id");
         $student->load(['department', 'user']);
 
         return response()->json($student, 200);
@@ -98,8 +112,8 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        $student->user->delete();
-
+        Cache::forget('students.index');
+        Cache::forget("students.show.$student->id");
         return response()->json([
             'message' => 'Student deleted successfully'
         ], 200);
