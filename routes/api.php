@@ -15,13 +15,13 @@ use App\Http\Controllers\AuthController; # App not app
 Route::post('/login', [AuthController::class, 'login']);
 
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth:api')->group(function () {
 
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
 
-    Route::middleware('admin')->group(function () {
+    Route::middleware('role:admin')->group(function () {
         Route::apiResource('departments', DepartmentController::class);
         Route::apiResource('courses', CourseController::class);
         Route::apiResource('enrollments', EnrollmentController::class);

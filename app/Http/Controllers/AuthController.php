@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -21,17 +22,26 @@ class AuthController extends Controller
             return response()->json(['error' => 'Invalid login'], 401);
         }
 
-        $token = $user->createToken('api_token')->plainTextToken;
+        $token = JWTAuth::fromUser($user);
 
         return response()->json([
-            'token' => $token,
-            'role'  => $user->role
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'role'  => $user->getRoleNames(),
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'address' => $user?->address,
+            ],
+            'permissions' => $user->getPermissionsViaRoles()->pluck('name')
         ]);
     }
 
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
+        JWTAuth::invalidate(JWTAuth::getToken());
 
         return response()->json(['message' => 'Logged out']);
     }
